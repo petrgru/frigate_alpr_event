@@ -1,0 +1,11 @@
+url_cam=http://10.59.10.102/Streaming/channels/1/picture
+mqtt_broker=10.10.10.113
+mqtt_port=1883
+mqtt_user=admin
+mqtt_password=PASSWORD
+mqtt_topic=frigate/test
+mqtt_client_id=alpr
+codeproject_host=http://10.10.10.113:32168
+crop_image=0 0 200 200
+
+
