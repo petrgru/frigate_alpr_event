@@ -11,7 +11,7 @@ codeproject_host = "http://xxx:8888"
 url_cam = "????"
 mqtt_broker = 'x.x.x.x'
 port = 1883
-topic_sub = "frigate/door/person/snapshot"
+topic_sub = "   "
 client_id = 'xzcfghjt123'
 mqtt_password=''
 mqtt_user=''
@@ -38,8 +38,14 @@ codeproject_host=os.environ['codeproject_host']
 crop_image=os.environ['crop_image']
 
 def picture_dowload(url, filename="receive.jpg"):
-    r = requests.get(url, stream=True)
+    try:
+        r = requests.get(url, stream=True)
+        if r.ok:
+            logger.info("image download")
+    except requests.exceptions.RequestException as e:
+        logger.info('Problem download snapshot ' + str(e))    
     dt = Image.open(r.raw)
+    dt.save("full.png")
     crop_str=crop_image.split()
     crop=[]
     for i in crop_str:
@@ -48,10 +54,12 @@ def picture_dowload(url, filename="receive.jpg"):
     bio = io.BytesIO()
     dt.save(bio, format="PNG",quality=100)
     bio.seek(0)
+    dt.save("crop.png")
     response = requests.post(
         f'{codeproject_host}/v1/image/alpr',
         files={'image': ('file.PNG', bio, 'image/png')})
     logger.info(response.json())
+
 #    print(response.json())
     return response.json()
 
@@ -76,6 +84,6 @@ def main():
     subscribe(client)
     client.loop_forever()
     
-if __name__ == '__main__':
-    
+if __name__ == '__main__':   
     main()
+
